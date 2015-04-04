@@ -1,0 +1,593 @@
+/*! import reset.css (http://meyerweb.com/eric/tools/css/reset/) as scss */
+
+@import 'reset';
+
+/*! style.css */
+
+$blue: rgb(10, 58, 146) ;
+$positiveFgc: #f88 ;
+$positiveBgc: #faa ;
+$negativeFgc: #49f ;
+$negativeBgc: #8cf ;
+
+
+body {
+  background-color: #e8e8e8 ;
+  color: #333 ;
+  font-family: sans-serif ;
+}
+
+#main-header {
+  h1 {
+    line-height: 3em ;
+    font-size: 2rem ;
+    text-align: center ;
+  }
+}
+
+.player-stats,
+.score {
+  background-color: #f8f8f8 ;
+  padding: 2rem 0 ;
+  /* background-image: linear-gradient(to bottom, #eee, #f8f8f8); */
+  /* background-size: 100% 4em; */
+  /* background-repeat: no-repeat; */
+  border-bottom: 1px solid #e8e8e8 ;
+
+  /* &:nth-child(even) { */
+  /*   background-color: #eee ; */
+  /* } */
+
+  & > h1 {
+    font-size: 2em ;
+    margin: 0 auto ;
+    width: 90% ;
+    max-width: 900px ;
+    font-weight: bold ;
+    line-height: 2 ;
+
+    .number {
+      color: #aaa ;
+    }
+    .name {
+      letter-spacing: .1em ;
+    }
+  }
+
+  a {
+    color: inherit ;
+    text-decoration: none ;
+  }
+  
+  table {
+    width: 100% ;
+    border-collapse: collapse ;
+    font-family: 'Gill Sans', sans-serif ;
+
+    tr {
+      border-bottom: 1px solid #ddd ;
+    }
+
+    th, td {
+      box-sizing: border-box ;
+      text-align: center ;
+      font-size: .9em ;
+      min-width: 2em ;
+      padding: .5em ;
+      vertical-align: middle ;
+      border: 1px solid #ddd ;
+    }
+
+    th {
+      background-color: #ddd ;
+    }
+
+    thead {
+      th {
+        font-weight: bold ;
+      }
+    }
+
+    tbody {
+      th {
+        background-color: #e8e8e8 ;
+      }
+    }
+  }
+
+  .loading {
+    text-align: center ;
+    font-size: 1em ;
+    color: #aaa ;
+    position: relative ;
+
+    .loading-message {
+      display: block ;
+      text-indent: -100% ;
+      overflow: hidden ;
+      width: 0 ;
+    }
+
+    .loading-message:before,
+    &:before,
+    &:after {
+      position: absolute ;
+      content: '' ;
+      display: block ;
+      height: 1em ;
+      width: 1em ;
+      background-color: #ddd ;
+      top: 50% ;
+      -webkit-animation-name: loading ;
+      -webkit-animation-duration: .5s ;
+      -webkit-animation-timing-function: ease-in-out ;
+      -webkit-animation-iteration-count: infinite ;
+      -webkit-animation-direction: alternate ;
+      opacity: 0 ;
+      border-radius: 10% ;
+    }
+
+    .loading-message:before {
+      left: 50% ;
+      transform: translateX(-200%) ;
+    }
+    &:after {
+      left: 50% ;
+      transform: translateX(-50%) ;
+      -webkit-animation-delay: .15s ;
+    }
+    &:before {
+      left: 50% ;
+      transform: translateX(100%) ;
+      -webkit-animation-delay: .3s ;
+    }
+    
+  }
+}
+
+.result {
+  position: relative ;
+  margin: 0 auto ;
+  width: 90% ;
+  max-width: 900px ;
+
+  h1 {
+    padding-bottom: 1rem ;
+    font-family: 'Gill Sans', sans-serif ;
+    font-size: .8rem ;
+    color: #aaa ;
+
+    .date {
+      font-size: 1rem ;
+      color: #666 ;
+    }
+    .ground {
+      color: #666 ;
+      font-size: 1em ;
+    }
+  }
+
+  .more-detail {
+    text-align: right ;
+    font-size: .9rem ;
+    padding-top: 1rem ;
+  }
+  
+  .short-score {
+    & > * {
+      display: inline-block ;
+      line-height: 4rem ;
+    }
+
+    .team-name {
+      width: 50% ;
+      box-sizing: border-box ;
+      overflow: hidden ;
+      white-space: nowrap ;
+      position: relative ;
+
+      &.home-team {
+        padding-right: 6rem ;
+        text-align: right ;
+      }
+      &.away-team {
+        padding-left: 6rem ;
+      }
+    }
+
+    .total-runs {
+      font-family: 'Gill Sans', sans-serif ;
+      font-size: 2.5em ;
+      width: 4rem ;
+      height: 4rem ;
+      border-radius: 100% ;
+      position: absolute ;
+      left: 50% ;
+      text-align: center ;
+      background-color: #ddd ;
+
+      &.home-team {
+        transform: translateX(-4.5rem) ;
+      }
+      &.away-team {
+        transform: translateX(.5rem) ;
+      }
+    }
+
+    &.win .total-runs.our-team {
+      background-color: $positiveBgc ;
+    }
+    &.lose .total-runs.our-team {
+      background-color: $negativeBgc ;
+    }
+  }
+}
+
+.table-score {
+  width: 90% ;
+  max-width: 900px ;
+  margin: 2rem auto 0;
+  line-height: 1.6 ;
+
+  table {
+    .total-runs {
+      font-weight: bold ;
+    }
+    
+    .team-name  {
+      width: auto ;
+      max-width: 9em ;
+    }
+    tbody {
+      .team-name {
+        background-color: #e8e8e8 ;
+      }
+      .total-runs, .total-hits, .total-errors {
+        background-color: #e8e8e8 ;
+      }
+    }
+  }
+}
+
+.batting-results {
+  width: 90% ;
+  max-width: 900px ;
+  margin: 2rem auto 0;
+  line-height: 1.6 ;
+
+  a {
+    font-weight: bold ;
+
+    &:hover {
+      color: #aaa ;
+    }
+  }
+
+  table {
+    .name {
+      width: auto ;
+    }
+    .order {
+      width: 3.5em ;
+    }
+    .atbat {
+      min-width: 3em ;
+    }
+
+    tbody {
+      .order,
+      .date {
+        background-color: #e8e8e8 ;
+      }
+      .atbat {
+        color: #666 ;
+        padding: 0 ;
+      }
+      .h, .dbl, .tpl, .hr {
+        color: $positiveFgc ;
+      }
+      /* .bb, .hbp, .sh, .sf { */
+      /*   color: #333 ; */
+      /* } */
+      .so, .dp {
+        color: $negativeFgc ;
+      }
+      .hr {
+        font-weight: bold ;
+      }
+
+      .result-body {
+        vertical-align: bottom ;
+        display: inline-block ;
+        width: 100% ;
+        position: relative ;
+        z-index: 2 ;
+        overflow: hidden ;
+        padding: .5em ;
+        box-sizing: border-box ;
+
+        &:before,
+        &:after {
+          position: absolute ;
+          color: #ccc ;
+          line-height: 1 ;
+          z-index: -1 ;
+          font-size: .9rem ;
+          font-weight: normal ;
+        }
+        
+        &:before {
+          top: .2em ;
+          left: .2em ;
+          content: attr(data-begin-inning) ;
+        }
+        
+        &:after {
+          bottom: .2em ;
+          right: .2em ;
+          color: $positiveFgc ;
+        }
+      }
+      
+      .rbi .result-body:after {
+        content: '+' attr(data-rbi) ;
+      }
+    }
+  }
+}
+
+.batting-stats {
+  width: 90% ;
+  max-width: 900px ;
+  margin: 2rem auto 0;
+  line-height: 1.6 ;
+
+  a {
+    font-weight: bold ;
+
+    &:hover {
+      color: #aaa ;
+    }
+  }
+
+  table {
+    .situation {
+      width: 6em ;
+    }
+  }
+}
+
+.pitching-results {
+  width: 90% ;
+  max-width: 900px ;
+  margin: 2rem auto 0;
+  line-height: 1.6 ;
+
+  a {
+    font-weight: bold ;
+
+    &:hover {
+      color: #aaa ;
+    }
+  }
+
+  table {
+    th, td {
+      min-width: 3em ;
+    }
+    .name {
+      width: auto ;
+    }
+    .order {
+      width: 3.5em ;
+    }
+
+    tbody {
+      .order,
+      .date {
+        background-color: #e8e8e8 ;
+      }
+    }
+  }
+}
+
+.pitching-stats {
+  width: 90% ;
+  max-width: 900px ;
+  margin: 2rem auto 0;
+  line-height: 1.6 ;
+
+  a {
+    font-weight: bold ;
+
+    &:hover {
+      color: #aaa ;
+    }
+  }
+}
+
+#team-stats {
+  thead tr th {
+    cursor: pointer ;
+    user-select: none ;
+  }
+  .sorted {
+    border-bottom: 1px solid $negativeFgc ;
+    background-color: #f8f8f8 ;
+  }
+  .sorted.desc {
+    border-bottom-color: $positiveFgc ;
+  }
+}
+
+.notes {
+  width: 90% ;
+  max-width: 900px ;
+  margin: 2rem auto 0;
+  line-height: 1.6 ;
+
+  .stats {
+    font-weight: bold ;
+  }
+}
+
+
+/* ------------------------------------------------------------ *
+ * Form
+ * ------------------------------------------------------------ */
+
+#score-form-page {
+  background-color: #eee ;
+}
+
+#score-form {
+  margin: 0 1em ;
+  
+  table {
+    border: 1px solid #ddd ;
+    border-collapse: collapse ;
+    width: 100% ;
+    background-color: #e8e8e8 ;
+
+    th, td {
+      box-sizing: border-box ;
+    }
+    
+    thead {
+      th {
+        background-color: #ddd ;
+        padding: .5em ;
+        font-size: .8rem ;
+      }
+    }
+
+    input {
+      box-sizing: border-box ;
+      margin: 0 ;
+      padding: .5em ;
+    }
+
+    input[type="text"] {
+      width: 100% ;
+    }
+  }
+
+  #game-score-form {
+    margin: 2rem 0 ;
+
+    .control-innings {
+      font-size: .8em ;
+      text-align: right ;
+      
+      li {
+        display: inline ;
+        cursor: pointer ;
+      }
+    }
+    
+    td input {
+      text-align: center ;
+    }
+    
+    .team-name {
+      width: 16em ;
+
+      input {
+        text-align: left ;
+      }
+    }
+  }
+
+  #batting-stats-form, #pitching-stats-form {
+    margin: 2rem 0 ;
+    
+    .control-atbats {
+      font-size: .8em ;
+      text-align: right ;
+
+      li {
+        display: inline ;
+        cursor: pointer ;
+      }
+    }
+
+    .order {
+      width: 3em ;
+      input {
+        text-align: center ;
+      }
+    }
+    
+    .control-row {
+      width: 5em ;
+      text-align: center ;
+      font-size: .8em ;
+      line-height: 2 ;
+      
+      span {
+        display: block ;
+        cursor: pointer ;
+      }
+    }
+  }
+
+  #batting-stats-form {
+    .player {
+      width: 9em ;
+
+      .positions {
+        width: 100% ;
+      }
+      .name {
+        width: 100% ;
+      }
+    }
+
+    .stats {
+      width: 6em ;
+
+      input {
+        width: 50% ;
+        text-align: center ;
+      }
+    }
+
+    .atbat {
+      .inning, .out-count {
+        width: 30% ;
+      }
+      .first-runner, .second-runner, .third-runner {
+        width: 10% ;
+      }
+      .kind, .rbi {
+        width: 30% ;
+      }
+      .result {
+        width: 40% ;
+      }
+    }
+  }
+
+  #pitching-stats-form {
+    input[type="text"] {
+      text-align: center ;
+    }
+    
+    .name {
+      width: 9em ;
+
+      input {
+        text-align: left ;
+      }
+    }
+  }
+}
+
+@-webkit-keyframes loading {
+  0% {
+    opacity: 0 ;
+  }
+  100% {
+    opacity : 1 ;
+  }
+}

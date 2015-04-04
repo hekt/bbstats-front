@@ -1,0 +1,105 @@
+!!! 5
+
+- vuejsPath = "js/vue.js"
+- baseUrl = "//localhost:50260/"
+- ourTeam = "北海道日本ハムファイターズ"
+
+%html
+  %head
+    %meta(charset="utf-8")
+    %base(href="#{baseUrl}")
+    %link(rel="stylesheet" href="css/style.css")
+    %script(src="#{vuejsPath}" defer)
+    %script(src="js/common.js" defer)
+    %script(src="js/stats.js" defer)
+    %title #{ourTeam}
+  %body#team-stats
+
+    %div#app
+      %header#main-header
+        %h1 #{ourTeam}
+
+      %div#contents
+        %article.player-stats(v-if="loaded")
+          %section.batting-stats(v-component="batting-stats-component" v-with="stats: batting")
+          %section.pitching-stats(v-component="pitching-stats-component" v-with="stats: pitching")
+          
+    %template#batting-stats-template
+      %h1 野手成績
+      %table
+        %thead
+          %tr(v-on="click: sortRows")
+            %th.ranking 順位
+            %th.player-name(data-key="name") 名前
+            %th.g(data-key="g") 試合
+            %th.ab(data-key="ab") 打数
+            %th.h(data-key="h") 安打
+            %th.hr(data-key="hr") 本塁打
+            %th.bb(data-key="bb") 四球
+            %th.rbi(data-key="rbi") 打点
+            %th.so(data-key="so") 三振
+            %th.sb(data-key="sb") 盗塁
+            %th.error(data-key="error") 失策
+            %th.avg(data-key="avg") 打率
+            %th.obp(data-key="obp") 出塁率
+            %th.slg(data-key="slg") 長打率
+            %th.ops(data-key="ops") OPS
+        %tbody
+          %tr(v-repeat="stats")
+            %th.ranking {{$index+1}}
+            %td.player-name
+              %a(href="#{baseUrl}player/{{playerId}}") {{name}}
+            %td.g {{g}}
+            %td.ab {{ab}}
+            %td.h {{h}}
+            %td.hr {{hr}}
+            %td.bb {{bb}}
+            %td.rbi {{rbi}}
+            %td.so {{so}}
+            %td.sb {{sb}}
+            %td.error {{error}}
+            %td.avg {{avg | formatRatio}}
+            %td.obp {{obp | formatRatio}}
+            %td.slg {{slg | formatRatio}}
+            %td.ops {{ops | formatRatio}}
+
+    %template#pitching-stats-template
+      %h1 投手成績
+      %table
+        %thead
+          %tr(v-on="click: sortRows")
+            %th.rankind 順位
+            %th.player-name(data-key="name") 名前
+            %th.g(data-key="g") 登板
+            %th.inning(data-key="out") 投球回
+            %th.so(data-key="so") 奪三振
+            %th.bb(data-key="bb") 与四死
+            %th.h(data-key="h") 被安
+            %th.hr(data-key="hr") 被本
+            %th.era(data-key="era") 防御率
+            %th.whip(data-key="whip") WHIP
+            %th.k9(data-key="k9") 奪三振率
+            %th.win(data-key="win") 勝利
+            %th.lose(data-key="lose") 敗戦
+            %th.hold(data-key="hold") H
+            %th.save(data-key="save") S
+            %th.wpct(data-key="wpct") 勝率
+        %tbody
+          %tr(v-repeat="stats")
+            %th.ranking {{$index+1}}
+            %td.player-name
+              %a(href="#{baseUrl}player/{{playerId}}") {{name}}
+            %td.g {{g}}
+            %td.inning {{out | outToInning}}
+            %td.so {{so}}
+            %td.bb {{bb}}
+            %td.h {{h}}
+            %td.hr {{hr}}
+            %td.era {{era | formatRatio2}}
+            %td.whip {{whip | formatRatio2}}
+            %td.k9 {{k9 | formatRatio2}}
+            %td.win {{win}}
+            %td.lose {{lose}}
+            %td.hold {{hold}}
+            %td.save {{save}}
+            %td.wpct {{wpct | formatRatio}}

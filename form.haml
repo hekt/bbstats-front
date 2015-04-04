@@ -1,0 +1,168 @@
+!!! 5
+
+- vuejsPath = "js/vue.js"
+- baseUrl = "//localhost:52001/"
+- ourTeam = "北海道日本ハムファイターズ"
+
+%html
+  %head
+    %meta(charset="utf-8")
+    %link(rel="stylesheet" href="css/style.css")
+    %script(src="#{vuejsPath}" defer)
+    %script(src="js/es6-promise.min.js" defer)
+    %script(src="js/aes.js")
+    %script(src="js/form.js" defer)
+    %title #{ourTeam}
+
+  %body#score-form-page
+
+    %div#app
+      %header#main-header
+        %h1 #{ourTeam}
+
+      %div#contents
+        %form#score-form
+          %input(type="button" v-on="click: send" value="Submit")
+          %div#general-form(v-component="general-form-component" v-with="formData: generalFormData")
+          %div#game-score-form(v-component="score-form-component" v-with="formData: scoreFormData")
+          %div#batting-stats-form(v-component="batting-form-component" v-with="formData: battingFormData")
+          %div#pitching-stats-form(v-component="pitching-form-component" v-with="formData: pitchingFormData")
+
+    %template#general-form-template
+      %dl
+        %dt ユーザー
+        %input(type="text" v-model="formData.user" name="username")
+        %dt パスワード
+        %input(type="password" v-model="formData.key" name="password")
+        %dt 日時
+        %dd
+          %input(type="text" v-model="formData.date")
+        %dt グラウンド
+        %dd
+          %input(type="text" v-model="formData.ground")
+        %dt 結果 (win/lose/draw)
+        %dd
+          %input(type="text" v-model="formData.result")
+    %template#score-form-template
+      %ul.control-innings
+        %li.expand-innings(v-on="click: expandInnings") イニングを増やす
+        %li.contract-innings(v-on="click: contractInnings") イニングを減らす
+      %table#score-form-table
+        %thead
+          %tr
+            %th.team-name チーム
+            %th.run(v-repeat="formData.homeTeam.runs")
+              {{$index + 1}}
+            %th.total-runs R
+            %th.total-hits H
+            %th.total-errors E
+        %tbody
+          %tr
+            %td.team-name
+              %input(type="text" v-model="formData.awayTeam.teamName")
+            %td.run(v-repeat="formData.awayTeam.runs")
+              %input(type="text" v-model="value" number v-on="change: updateTotalRuns")
+            %td.total-runs
+              %input(type="text" v-model="formData.awayTeam.totalRuns" number)
+            %td.total-hits
+              %input(type="text" v-model="formData.awayTeam.totalHits" number)
+            %td.total-errors
+              %input(type="text" v-model="formData.awayTeam.totalErrors" number)
+          %tr
+            %td.team-name
+              %input(type="text" v-model="formData.homeTeam.teamName")
+            %td.run(v-repeat="formData.homeTeam.runs")
+              %input(type="text" v-model="value" number v-on="change: updateTotalRuns")
+            %td.total-runs
+              %input(type="text" v-model="formData.homeTeam.totalRuns" number)
+            %td.total-hits
+              %input(type="text" v-model="formData.homeTeam.totalHits" number)
+            %td.total-errors
+              %input(type="text" v-model="formData.homeTeam.totalErrors" number)
+              
+    %template#batting-form-template
+      %ul.control-atbats
+        %li.expand-atbats(v-on="click: expandAtbats") 打席を増やす
+        %li.contract-atbats(v-on="click: contractAtbats") 打席を減らす
+      
+      %table#batting-form-table
+        %thead
+          %tr
+            %th.order 打順
+            %th.player 選手
+            %th.stats 成績
+            %th.atbat(v-repeat="formData.atbats") 第{{$index + 1}}打席
+            %th.control-row 操作
+        %tbody
+          %tr(v-repeat="formData.players")
+            %td.order
+              %input(type="text" v-model="order" number placeholder="order")>
+            %td.player>
+              %input.name(type="text" v-model="name" placeholder="name")>
+              %br>
+              %input.positions(type="text" v-model="positions" placeholder="positions")>
+            %td.stats>
+              %input.run(type="text" v-model="run" number placeholder="run")>
+              %input.sb(type="text" v-model="sb" number placeholder="sb")>
+              %br>
+              %input.error(type="text" v-model="error" number placeholder="error")>
+            %td.atbat(v-repeat="atbats" class="atbat-{{$index+1}}")>
+              %input.result(type="text" v-model="result" placeholder="result" v-on="change: suggest(this, $event)")>
+              %input.kind(type="text" v-model="resultKind" placeholder="kind")>
+              %input.rbi(type="text" v-model="rbi" placeholder="rbi")
+              %br>
+              %input.inning(type="text" v-model="inning" number placeholder="inning")>
+              %input.out-count(type="text" v-model="outCount" number placeholder="out count")>
+              %input.first-runner(type="checkbox" v-model="runners.first")>
+              %input.second-runner(type="checkbox" v-model="runners.second")>
+              %input.third-runner(type="checkbox" v-model="runners.third")>
+            %td.control-row
+              %span(v-on="click: addRow(this, $event)") 行追加
+              %span(v-on="click: removeRow(this, $event)") 行削除
+            
+    %template#pitching-form-template
+      %table#pitching-form-table
+        %thead
+          %tr
+            %th.order 投順
+            %th.name 選手
+            %th.bf 打者
+            %th.out 奪アウト
+            %th.run 失点
+            %th.erun 自責点
+            %th.so 奪三振
+            %th.bb 四死球
+            %th.h 被安打
+            %th.hr 被本塁打
+            %th.error: 被失策
+            %th.pitching-result: 勝敗
+            %th.control-row 操作
+        %tbody
+          %tr(v-repeat="formData.players")
+            %td.order
+              %input(type="text" value="{{$index+1}}" number)
+            %td.name
+              %input(type="text" v-model="name" placeholder="name")
+            %td.bf
+              %input(type="text" v-model="bf" placeholder="bf")
+            %td.out
+              %input(type="text" v-model="out" number placeholder="out")
+            %td.run
+              %input(type="text" v-model="run" number placeholder="run")
+            %td.erun
+              %input(type="text" v-model="erun" number placeholder="erun")
+            %td.so
+              %input(type="text" v-model="so" number placeholder="so")
+            %td.bb
+              %input(type="text" v-model="bb" number placeholder="bb")
+            %td.h
+              %input(type="text" v-model="h" number placeholder="h")
+            %td.hr
+              %input(type="text" v-model="hr" number placeholder="hr")
+            %td.error
+              %input(type="text" v-model="error" number placeholder="error")
+            %td.pitching-result
+              %input(type="text" v-model="result" placeholder="w/l")
+            %td.control-row
+              %span(v-on="click: addRow(this, $event)") 行追加
+              %span(v-on="click: removeRow(this, $event)") 行削除
