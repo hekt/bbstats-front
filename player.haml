@@ -18,6 +18,12 @@
     %div#app
       %header#main-header
         %h1 #{ourTeam}
+        %nav
+          %ul
+            %li
+              %a(href="./") 試合結果
+            %li
+              %a(href="./stats") 選手成績
 
       %div#contents
         %article.player-stats(v-if="loaded")
@@ -92,7 +98,8 @@
               %th.atbat(v-repeat="player.mostAtbats") 第{{$index + 1}}打席
           %tbody
             %tr(v-repeat="player.results")
-              %th.date {{date | formatDate}}
+              %th.date
+                %a(href="#{baseUrl}score/{{date | formatInternalDate}}") {{date | formatDate}}
               %td.ground {{ground}}
               %td.sb {{sb}}
               %td.error {{error}}
@@ -151,7 +158,8 @@
               %th.pitching-result 勝敗
           %tbody
             %tr(v-repeat="player.results")
-              %th.date {{date | formatDate}}
+              %th.date
+                %a(href="#{baseUrl}score/{{date | formatInternalDate}}") {{date | formatDate}}
               %td.ground {{ground}}
               %td.inning {{out | outToInning }}
               %td.run {{run}}

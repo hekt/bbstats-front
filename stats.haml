@@ -18,6 +18,12 @@
     %div#app
       %header#main-header
         %h1 #{ourTeam}
+        %nav
+          %ul
+            %li
+              %a(href="./") 試合結果
+            %li
+              %a(href="./stats") 選手成績
 
       %div#contents
         %article.player-stats(v-if="loaded")
@@ -72,6 +78,11 @@
             %th.player-name(data-key="name") 名前
             %th.g(data-key="g") 登板
             %th.inning(data-key="out") 投球回
+            %th.win(data-key="win") 勝利
+            %th.lose(data-key="lose") 敗戦
+            %th.hold(data-key="hold") H
+            %th.save(data-key="save") S
+            %th.wpct(data-key="wpct") 勝率
             %th.so(data-key="so") 奪三振
             %th.bb(data-key="bb") 与四死
             %th.h(data-key="h") 被安
@@ -79,11 +90,6 @@
             %th.era(data-key="era") 防御率
             %th.whip(data-key="whip") WHIP
             %th.k9(data-key="k9") 奪三振率
-            %th.win(data-key="win") 勝利
-            %th.lose(data-key="lose") 敗戦
-            %th.hold(data-key="hold") H
-            %th.save(data-key="save") S
-            %th.wpct(data-key="wpct") 勝率
         %tbody
           %tr(v-repeat="stats")
             %th.ranking {{$index+1}}
@@ -91,6 +97,11 @@
               %a(href="#{baseUrl}player/{{playerId}}") {{name}}
             %td.g {{g}}
             %td.inning {{out | outToInning}}
+            %td.win {{win}}
+            %td.lose {{lose}}
+            %td.hold {{hold}}
+            %td.save {{save}}
+            %td.wpct {{wpct | formatRatio}}
             %td.so {{so}}
             %td.bb {{bb}}
             %td.h {{h}}
@@ -98,8 +109,3 @@
             %td.era {{era | formatRatio2}}
             %td.whip {{whip | formatRatio2}}
             %td.k9 {{k9 | formatRatio2}}
-            %td.win {{win}}
-            %td.lose {{lose}}
-            %td.hold {{hold}}
-            %td.save {{save}}
-            %td.wpct {{wpct | formatRatio}}

@@ -154,6 +154,28 @@ a.Promise&&"reject"in a.Promise&&"all"in a.Promise&&"race"in a.Promise&&function
     });
   };
 
+  utils.buildSBText = function(players) {
+    var sbs = [];
+    players.forEach(function(player) {
+      if (player.sb === 1)
+        sbs.push(player.name);
+      else if (player.sb)
+        sbs.push(player.name + '(' + player.sb + ')');
+    });
+    return sbs.join(', ');
+  };
+
+  utils.buildErrorText = function(players) {
+    var errors = [];
+    players.forEach(function(player) {
+      if (player.error === 1)
+        errors.push(player.name);
+      else if (player.error)
+        errors.push(player.name + '(' + player.error + ')');
+    });
+    return errors.join(', ');
+  };
+
   
   // ------------------------------------------------------------
   // Vue
@@ -177,6 +199,13 @@ a.Promise&&"reject"in a.Promise&&"all"in a.Promise&&"race"in a.Promise&&function
     return date.getFullYear() + '年' +
       utils.zeroPadding(date.getMonth() + 1, 2) + '月' +
       utils.zeroPadding(date.getDate(), 2) + '日';
+  });
+  Vue.filter('formatInternalDate', function(dateString) {
+    var date = new Date(dateString);
+    var str = date.getFullYear() + '-' +
+          utils.zeroPadding(date.getMonth()+1, 2) + '-' +
+          utils.zeroPadding(date.getDate(), 2);
+    return str;
   });
   Vue.filter('formatInning', function(num) {
     return num ? num + '回' : '';

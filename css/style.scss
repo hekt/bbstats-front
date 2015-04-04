@@ -19,9 +19,28 @@ body {
 
 #main-header {
   h1 {
-    line-height: 3em ;
     font-size: 2rem ;
     text-align: center ;
+    margin: 3rem 0 2rem 0 ;
+  }
+
+  nav {
+    a {
+      color: #333 ;
+      text-decoration: none ;
+
+      &:hover {
+        color: #aaa ;
+      }
+    } 
+    
+    text-align: center ;
+    margin: 2rem 0 2rem 0 ;
+    
+    li {
+      display: inline-block ;
+      margin: 0 1em ;
+    }
   }
 }
 

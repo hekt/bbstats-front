@@ -26,9 +26,21 @@
         score: null,
         battingResults: null,
         pitchingResults: null,
+        notes: null,
       };
     },
     created: function() {
+      this.$on('scroll', function(time) {
+        var myTime = (new Date(this.$data.score.date)).getTime();
+        if (time === myTime) {
+          var elem = this.$el;
+          var rect = elem.getBoundingClientRect();
+          this.toggleDetail();
+          this.loadDetails().then(function() {
+            window.scrollTo(rect.left, rect.top);
+          });
+        }
+      });
     },
     methods: {
       toggleDetail: function() {
@@ -49,7 +61,6 @@
           this.$data.pitchingResults = {
             players: json.pitching.results,
           };
-          this.$data.notes = {};
           
           this.$data.detailLoaded = true;
           this.$data.detailLoading = false;
@@ -105,6 +116,11 @@
           this.$data.scores = json.map(function(score) {
             return {score: score};
           });
+          var match = location.pathname.match(/\/score\/(\d{4}-\d{2}-\d{2})/);
+          if (match)
+            var time = (new Date(match[1])).getTime();
+            var f = this.$broadcast.bind(this, 'scroll', time);
+            Vue.nextTick(f);
         }.bind(this)).catch(function(err) {
           console.error(err);
         });
