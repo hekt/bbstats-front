@@ -42,7 +42,7 @@
       },
       created: function() {
         var playerId = utils.getPlayerIdFromUrl();
-        var url = 'http://localhost:50260/api/player/stats?' +
+        var url = '//' + location.host + '/api/player/stats?' +
               'playerId=' + playerId;
         utils.getJSON(url).then(function(json) {
           this.$data.hasBattingStats =

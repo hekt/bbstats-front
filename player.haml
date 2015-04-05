@@ -2,6 +2,7 @@
 
 - vuejsPath = "js/vue.js"
 - baseUrl = "//localhost:50260/"
+- baseUrl = "//tsurumaru.hekt.org/"
 - ourTeam = "北海道日本ハムファイターズ"
 
 %html
@@ -113,6 +114,11 @@
             %tr
               %th.g 登板
               %th.inning 投球回
+              %th.win 勝利
+              %th.lose 敗戦
+              %th.hold H
+              %th.save S
+              %th.wpct 勝率
               %th.so 奪三振
               %th.bb 与四死
               %th.h 被安
@@ -120,15 +126,15 @@
               %th.era 防御率
               %th.whip WHIP
               %th.k9 奪三振率
-              %th.win 勝利
-              %th.lose 敗戦
-              %th.hold H
-              %th.save S
-              %th.wpct 勝率
           %tbody
             %tr
               %td.g {{player.stats.total.g}}
               %td.inning {{player.stats.total.out | outToInning}}
+              %td.win {{player.stats.total.win}}
+              %td.lose {{player.stats.total.lose}}
+              %td.hold {{player.stats.total.hold}}
+              %td.save {{player.stats.total.save}}
+              %td.wpct {{player.stats.total.wpct | formatRatio}}
               %td.so {{player.stats.total.so}}
               %td.bb {{player.stats.total.bb}}
               %td.h {{player.stats.total.h}}
@@ -136,11 +142,6 @@
               %td.era {{player.stats.total.era | formatRatio2}}
               %td.whip {{player.stats.total.whip | formatRatio2}}
               %td.k9 {{player.stats.total.k9 | formatRatio2}}
-              %td.win {{player.stats.total.win}}
-              %td.lose {{player.stats.total.lose}}
-              %td.hold {{player.stats.total.hold}}
-              %td.save {{player.stats.total.save}}
-              %td.wpct {{player.stats.total.wpct | formatRatio}}
       %section.pitching-results
         %h1 投球結果
         %table

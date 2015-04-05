@@ -50,7 +50,7 @@
       },
       loadDetails: function() {
         var date = this.$data.score.date;
-        var url = 'http://localhost:50260/api/stats?date=' + date;
+        var url = '//' + location.host + '/api/stats?date=' + date;
         this.$data.detailLoading = true;
         return utils.getJSON(url).then(function(json) {
           var mostAtbats = utils.calcMostAtbats(json.batting.results);
@@ -111,7 +111,7 @@
       },
       created: function() {
         var url;
-        url = 'http://localhost:50260/api/score';
+        url = '//' + location.host + '/api/score';
         utils.getJSON(url).then(function(json) {
           this.$data.scores = json.map(function(score) {
             return {score: score};
