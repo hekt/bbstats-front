@@ -558,7 +558,10 @@ body {
         width: 100% ;
       }
       .name {
-        width: 100% ;
+        width: 70% ;
+      }
+      .player-id {
+        width: 30% ;
       }
     }
 
@@ -592,11 +595,15 @@ body {
       text-align: center ;
     }
     
-    .name {
+    .player {
       width: 9em ;
 
-      input {
+      .name {
+        width: 70% ;
         text-align: left ;
+      }
+      .player-id {
+        width: 30% ;
       }
     }
   }

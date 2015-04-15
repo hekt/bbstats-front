@@ -2,7 +2,7 @@
 
 - vuejsPath = "js/vue.js"
 - baseUrl = "//localhost:52001/"
-- baseUrl = "//tsurumaru.hekt.org/"
+-# - baseUrl = "//tsurumaru.hekt.org/"
 - ourTeam = "北海道日本ハムファイターズ"
 
 %html
@@ -11,7 +11,8 @@
     %link(rel="stylesheet" href="css/style.css")
     %script(src="#{vuejsPath}" defer)
     %script(src="js/es6-promise.min.js" defer)
-    %script(src="js/aes.js")
+    %script(src="js/aes.js" defer)
+    %script(src="js/common.js" defer)
     %script(src="js/form.js" defer)
     %title #{ourTeam}
 
@@ -99,7 +100,8 @@
             %td.order
               %input(type="text" v-model="order" number placeholder="order")>
             %td.player>
-              %input.name(type="text" v-model="name" placeholder="name")>
+              %input.name(type="text" v-model="playerName" v-on="change: suggestId(this, $event)" placeholder="name")>
+              %input.player-id(type="text" v-model="playerId" placeholder="id")
               %br>
               %input.positions(type="text" v-model="positions" placeholder="positions")>
             %td.stats>
@@ -126,7 +128,7 @@
         %thead
           %tr
             %th.order 投順
-            %th.name 選手
+            %th.player 選手
             %th.bf 打者
             %th.out 奪アウト
             %th.run 失点
@@ -142,8 +144,9 @@
           %tr(v-repeat="formData.players")
             %td.order
               %input(type="text" value="{{$index+1}}" number)
-            %td.name
-              %input(type="text" v-model="name" placeholder="name")
+            %td.player>
+              %input.name(type="text" v-model="playerName" v-on="change: suggestId(this, $event)" placeholder="name")>
+              %input.player-id(type="text" v-model="playerId" placeholder="id")
             %td.bf
               %input(type="text" v-model="bf" placeholder="bf")
             %td.out

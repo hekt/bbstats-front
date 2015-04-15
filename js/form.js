@@ -7,6 +7,8 @@
     history.pushState(null, null, '');
   });
 
+  var utils = global.utils;
+
   // ------------------------------------------------------------
   // Vue
   // ------------------------------------------------------------
@@ -65,6 +67,11 @@
         var atbat = player.atbats[elem.$index];
         atbat.resultKind = atbat.resultKind || suggestResultKind(atbat.result);
       },
+      suggestId: function(elem, e) {
+        var data = this.$data.formData;
+        var player = data.players[elem.$index];
+        player.playerId = playerDic[player.playerName] || player.playerId;
+      },
       addRow: function(row, e) {
         var data = this.$data.formData;
         var i = row.$index;
@@ -101,6 +108,11 @@
   var PitchingFormComponent = Vue.extend({
     template: '#pitching-form-template',
     methods: {
+      suggestId: function(elem, e) {
+        var data = this.$data.formData;
+        var player = data.players[elem.$index];
+        player.playerId = playerDic[player.playerName] || player.playerId;
+      },
       addRow: function(row, e) {
         var data = this.$data.formData;
         var i = row.$index;
@@ -124,6 +136,14 @@
 
     var app = new Vue({
       el: '#app',
+      created: function() {
+        utils.getJSON('//' + location.host + '/api/members')
+          .then(function(json) {
+            json.forEach(function(obj) {
+              playerDic[obj.playerName] = obj.playerId;
+            });
+          });
+      },
       methods: {
         dump: function() {
           var general = this.$data.generalFormData;
@@ -200,8 +220,6 @@
       },
     });
     
-    global.scoreDump = app.dump;
-    global.scoreSend = app.send;
     global.app = app;
 
   });
@@ -210,6 +228,8 @@
   // ------------------------------------------------------------
   // Utils
   // ------------------------------------------------------------
+
+  var playerDic = {};
 
   function buildEncryptedRequest(key, body) {
     var nonce = generateNonce(32);
@@ -272,7 +292,8 @@
   function createPitcher(order) {
     return {
       order: order,
-      player: null,
+      playerName: null,
+      playerId: null,
       out: null,
       bf: null,
       run: null,
@@ -301,7 +322,8 @@
     var player = {
       order: order, 
       positions: null,
-      name: null,
+      playerName: null,
+      playerId: null,
       run: null,
       sb: null,
       error: null,

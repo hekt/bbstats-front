@@ -176,6 +176,145 @@ a.Promise&&"reject"in a.Promise&&"all"in a.Promise&&"race"in a.Promise&&function
     return errors.join(', ');
   };
 
+  utils.buildAvgHistory = function(results) {
+    var noAtbatKinds = ['bb', 'ibb', 'hbp', 'sf', 'sh', 'she'];
+    var hitKinds = ['h', 'dbl', 'tpl', 'hr'];
+    var history = [];
+    var temp = {ab: 0, h: 0};
+    results.forEach(function(result) {
+      var ab = temp.ab;
+      var h = temp.h;
+      result.atbats.forEach(function(atbat) {
+        var r = atbat.resultKind;
+        if (noAtbatKinds.indexOf(r) === -1) ab++;
+        if (hitKinds.indexOf(r) !== -1) h++;
+      });
+      var obj = {ab: ab, h: h};
+      history.push(obj);
+      temp = obj;
+    });
+    return history.map(function(h) {
+      return h.h / h.ab;
+    });
+  };
+
+  function createRect(x, y, w, h) {
+    return {
+      width: w,
+      height: h,
+      left: x,
+      right: w + x,
+      top: y,
+      bottom: h + y,
+    };
+  };
+
+  function drawLine(ctx, rect, rates) {
+    var w = rect.width;
+    var h = rect.height;
+    var xOffset = rect.left;
+    var yOffset = rect.top;
+    var space = rect.width / (rates.length - 1);
+    var circleSize = h / 30;
+    
+    ctx.beginPath();
+    rates.forEach(function(rate, i) {
+      var x = space * i + xOffset;
+      var y = h - h * rate + yOffset;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    rates.forEach(function(rate, i) {
+      var x = space * i + xOffset;
+      var y = h - h * rate + yOffset;
+      ctx.beginPath();
+      ctx.arc(x, y, circleSize, Math.PI*2, false);
+      ctx.fill();
+    });
+  }
+
+  function drawRuler(ctx, rect, objs, lineHeight) {
+    var w = rect.width;
+    var h = rect.height;
+    var xOffset = rect.left;
+    var yOffset = rect.top;
+
+    objs.forEach(function(obj, i) {
+      var y = rect.bottom - rect.bottom * obj.value;
+      ctx.beginPath();
+      ctx.moveTo(rect.left, y);
+      ctx.lineTo(rect.right, y);
+      ctx.stroke();
+
+      ctx.fillText(obj.text, rect.left, y);
+    });
+  }
+
+  function generateRulers(min, max, distance) {
+    var rulers = [];
+    for (var i = min; i <= max; i += distance) {
+      rulers.push(i);
+    }
+    return rulers;
+  }
+
+  utils.drawLineGraph = function(parent, rulerDistance, values) {
+    parent.style.position = 'relative';
+    var parentRect = parent.getBoundingClientRect();
+
+    var canvas = document.createElement('canvas');
+    canvas.width = parentRect.width;
+    canvas.height = parentRect.height;
+    canvas.style.position = 'absolute';
+    canvas.style.top = 0;
+    canvas.style.left = 0;
+
+    var frag = document.createDocumentFragment();
+    var rulerLayer = canvas.cloneNode();
+    var lineLayer = canvas.cloneNode();
+    frag.insertBefore(rulerLayer, null);
+    frag.insertBefore(lineLayer, null);
+    parent.appendChild(frag);
+    
+    var lineRect = createRect(40, 0, lineLayer.width-60, lineLayer.height);
+    var min = Math.floor(Math.min.apply(null, values) * 10) / 10;
+    var croppedValues = values.map(function(v) {
+      return v - min;
+    });
+    var max = Math.ceil(Math.max.apply(null, croppedValues) * 10) / 10;
+    var rates = croppedValues.map(function(v) {
+      return v / max;
+    });
+
+    // draw line graph
+    var lineCtx = lineLayer.getContext('2d');
+    lineCtx.strokeStyle = 'blue';
+    lineCtx.fillStyle = 'blue';
+    drawLine(lineCtx, lineRect, rates);
+
+    // draw rulers
+    var rulerValues = generateRulers(0, 9, 1).map(function(n) {
+      return n / 10;
+    });
+    var rulerRates = rulerValues.map(function(v) {
+      return v / max;
+    }).filter(function(v) {
+      return v <= 1;
+    });
+    var rulerObjs = rulerValues.filter(function(v) {
+      return v >= min;
+    }).map(function(v, i) {
+      return {text: v, value: rulerRates[i]};
+    });
+    var rulerRect = createRect(0, 0, rulerLayer.width, rulerLayer.height);
+    var rulerCtx = rulerLayer.getContext('2d');
+    rulerCtx.font = '1em sans-serif';
+    rulerCtx.strokeStyle = '#ddd';
+    rulerCtx.fillStyle = 'blue';
+    drawRuler(rulerCtx, rulerRect, rulerObjs);
+  };
+
   
   // ------------------------------------------------------------
   // Vue
