@@ -154,6 +154,28 @@ a.Promise&&"reject"in a.Promise&&"all"in a.Promise&&"race"in a.Promise&&function
     });
   };
 
+  utils.scanl = function(a, b, c) {
+    var acc, xs, fn;
+    if (arguments.length === 2) {
+      acc = a[0];
+      xs = a.slice(1);
+      fn = b;
+    } else if (arguments.length === 3){
+      acc = a;
+      xs = b;
+      fn = c;
+    } else {
+      throw new Error('invalid arguments');
+    }
+    var result = [acc];
+    xs.forEach(function(x) {
+      var y = fn(acc, x);
+      acc = y;
+      result.push(y);
+    });
+    return result;
+  };
+
   utils.buildSBText = function(players) {
     var sbs = [];
     players.forEach(function(player) {
@@ -176,91 +198,31 @@ a.Promise&&"reject"in a.Promise&&"all"in a.Promise&&"race"in a.Promise&&function
     return errors.join(', ');
   };
 
-  utils.buildAvgHistory = function(results) {
-    var noAtbatKinds = ['bb', 'ibb', 'hbp', 'sf', 'sh', 'she'];
-    var hitKinds = ['h', 'dbl', 'tpl', 'hr'];
-    var history = [];
-    var temp = {ab: 0, h: 0};
-    results.forEach(function(result) {
-      var ab = temp.ab;
-      var h = temp.h;
-      result.atbats.forEach(function(atbat) {
-        var r = atbat.resultKind;
-        if (noAtbatKinds.indexOf(r) === -1) ab++;
-        if (hitKinds.indexOf(r) !== -1) h++;
-      });
-      var obj = {ab: ab, h: h};
-      history.push(obj);
-      temp = obj;
-    });
-    return history.map(function(h) {
-      return h.h / h.ab;
-    });
+
+  // ------------------------------------------------------------
+  // Graph
+  // ------------------------------------------------------------
+
+  var graph = utils.graph = {};
+
+  graph.draw = function(parent, history) {
+    var cvs = graph.makeCanvases(parent);
+    var lineCtx = cvs.line.getContext('2d');
+    var rulerCtx = cvs.line.getContext('2d');
+
+    var w = cvs.line.width;
+    var h = cvs.line.height;
+
+    var size = h / 30;
+    var lineRect = graph.createRect(size, size, w - size*2, h - size*2);
+    graph.drawLine(lineCtx, lineRect, history, size);
   };
 
-  function createRect(x, y, w, h) {
-    return {
-      width: w,
-      height: h,
-      left: x,
-      right: w + x,
-      top: y,
-      bottom: h + y,
-    };
-  };
-
-  function drawLine(ctx, rect, rates) {
-    var w = rect.width;
-    var h = rect.height;
-    var xOffset = rect.left;
-    var yOffset = rect.top;
-    var space = rect.width / (rates.length - 1);
-    var circleSize = h / 30;
-    
-    ctx.beginPath();
-    rates.forEach(function(rate, i) {
-      var x = space * i + xOffset;
-      var y = h - h * rate + yOffset;
-      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-
-    rates.forEach(function(rate, i) {
-      var x = space * i + xOffset;
-      var y = h - h * rate + yOffset;
-      ctx.beginPath();
-      ctx.arc(x, y, circleSize, Math.PI*2, false);
-      ctx.fill();
-    });
-  }
-
-  function drawRuler(ctx, rect, objs, lineHeight) {
-    var w = rect.width;
-    var h = rect.height;
-    var xOffset = rect.left;
-    var yOffset = rect.top;
-
-    objs.forEach(function(obj, i) {
-      var y = rect.bottom - rect.bottom * obj.value;
-      ctx.beginPath();
-      ctx.moveTo(rect.left, y);
-      ctx.lineTo(rect.right, y);
-      ctx.stroke();
-
-      ctx.fillText(obj.text, rect.left, y);
-    });
-  }
-
-  function generateRulers(min, max, distance) {
-    var rulers = [];
-    for (var i = min; i <= max; i += distance) {
-      rulers.push(i);
-    }
-    return rulers;
-  }
-
-  utils.drawLineGraph = function(parent, rulerDistance, values) {
-    parent.style.position = 'relative';
+  graph.makeCanvases = function(parent) {
+    parent.style.position = (function(pos) {
+      if (!pos || pos === 'static') return 'relative';
+      return pos;
+    })(parent.style.position);
     var parentRect = parent.getBoundingClientRect();
 
     var canvas = document.createElement('canvas');
@@ -276,43 +238,70 @@ a.Promise&&"reject"in a.Promise&&"all"in a.Promise&&"race"in a.Promise&&function
     frag.insertBefore(rulerLayer, null);
     frag.insertBefore(lineLayer, null);
     parent.appendChild(frag);
+
+    return {
+      line: lineLayer,
+      ruler: rulerLayer,
+    };
+  };
+  
+  graph.createRect = function(x, y, w, h) {
+    return {
+      width: w,
+      height: h,
+      left: x,
+      right: w + x,
+      top: y,
+      bottom: h + y,
+    };
+  };
+
+  graph.buildHistory = function(results, countKeys, calcFunc) {
+    var newResults = results.slice(0);
+    newResults[0].value = calcFunc(newResults[0]);
+
+    var history = utils.scanl(newResults, function(acc, x) {
+      var newAcc = {};
+      countKeys.forEach(function(key) {
+        newAcc[key] = acc[key] + x[key];
+      });
+      newAcc.value = calcFunc(newAcc);
+      return newAcc;
+    });
+
+    var max = Math.max.apply(Math, history.map(function(x) {
+      return x.value;
+    }));
+
+    history.forEach(function(x) {
+      x.rate = x.value / max;
+    });
+
+    return history;
+  };
+
+  graph.drawLine = function(ctx, rect, values, circleSize) {
+    var w = rect.width;
+    var h = rect.height;
+    var xOffset = rect.left;
+    var yOffset = rect.top;
+    var space = rect.width / (values.length - 1);
     
-    var lineRect = createRect(40, 0, lineLayer.width-60, lineLayer.height);
-    var min = Math.floor(Math.min.apply(null, values) * 10) / 10;
-    var croppedValues = values.map(function(v) {
-      return v - min;
+    ctx.beginPath();
+    values.forEach(function(val, i) {
+      var x = space * i + xOffset;
+      var y = h - h * val.rate + yOffset;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     });
-    var max = Math.ceil(Math.max.apply(null, croppedValues) * 10) / 10;
-    var rates = croppedValues.map(function(v) {
-      return v / max;
-    });
+    ctx.stroke();
 
-    // draw line graph
-    var lineCtx = lineLayer.getContext('2d');
-    lineCtx.strokeStyle = 'blue';
-    lineCtx.fillStyle = 'blue';
-    drawLine(lineCtx, lineRect, rates);
-
-    // draw rulers
-    var rulerValues = generateRulers(0, 9, 1).map(function(n) {
-      return n / 10;
-    });
-    var rulerRates = rulerValues.map(function(v) {
-      return v / max;
-    }).filter(function(v) {
-      return v <= 1;
-    });
-    var rulerObjs = rulerValues.filter(function(v) {
-      return v >= min;
-    }).map(function(v, i) {
-      return {text: v, value: rulerRates[i]};
-    });
-    var rulerRect = createRect(0, 0, rulerLayer.width, rulerLayer.height);
-    var rulerCtx = rulerLayer.getContext('2d');
-    rulerCtx.font = '1em sans-serif';
-    rulerCtx.strokeStyle = '#ddd';
-    rulerCtx.fillStyle = 'blue';
-    drawRuler(rulerCtx, rulerRect, rulerObjs);
+    values.forEach(function(val, i) {
+      var x = space * i + xOffset;
+      var y = h - h * val.rate + yOffset;
+      ctx.beginPath();
+      ctx.arc(x, y, circleSize, Math.PI*2, false);
+      ctx.fill();
+    });    
   };
 
   
