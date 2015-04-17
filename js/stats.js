@@ -53,7 +53,7 @@
         pitching: {},
       },
       created: function() {
-        var url = '//' + location.host + '/api/stats/both';
+        var url = '//' + location.host + '/api/stats/both?year=2015';
         utils.getJSON(url).then(function(json) {
           this.$data.batting = json.batting;
           this.$data.pitching = json.pitching;

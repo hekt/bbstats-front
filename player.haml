@@ -2,29 +2,30 @@
 
 - vuejsPath = "js/vue.js"
 - baseUrl = "//localhost:50260/"
-- baseUrl = "//tsurumaru.hekt.org/"
+-# - baseUrl = "//tsurumaru.hekt.org/"
 - ourTeam = "北海道日本ハムファイターズ"
 
 %html
   %head
     %meta(charset="utf-8")
     %base(href="#{baseUrl}")
+    %meta(name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no")
     %link(rel="stylesheet" href="css/style.css")
     %script(src="#{vuejsPath}" defer)
     %script(src="js/common.js" defer)
     %script(src="js/player.js" defer)
-    %title #{ourTeam}
+    %title 鶴丸ボーイズ
   %body#player-stats
 
     %div#app
       %header#main-header
-        %h1 #{ourTeam}
+        %h1 Tsurumaru Boys
         %nav
-          %ul
-            %li
-              %a(href="./") 試合結果
-            %li
-              %a(href="./stats") 選手成績
+          %ul>
+            %li>
+              %a(href="./")> 試合結果
+            %li.active>
+              %a(href="./stats")> 選手成績
 
       %div#contents
         %article.player-stats(v-if="loaded")
@@ -37,6 +38,7 @@
     %template#player-batting-template
       %section.batting-stats
         %h1 野手成績
+        %div#avg-graph
         %table
           %thead
             %tr

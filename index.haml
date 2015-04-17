@@ -21,11 +21,11 @@
       %header#main-header
         %h1 Tsurumaru Boys
         %nav
-          %ul
-            %li
-              %a(href="./") 試合結果
-            %li
-              %a(href="./stats") 選手成績
+          %ul>
+            %li.active>
+              %a(href="./")> 試合結果
+            %li>
+              %a(href="./stats")> 選手成績
 
       %div#contents
         %div#scores
@@ -52,6 +52,7 @@
         %section.pitching-results(v-if="detailLoaded" v-with="results: pitchingResults" v-component="pitching-results-component")
 
     %template#table-score-template
+      %h1 スコアボード
       %table
         %thead
           %tr
@@ -74,6 +75,7 @@
             %td.total-hits {{score.homeTeam.totalHits}}
             %td.total-errors {{score.homeTeam.totalErrors}}
     %template#batting-results-template
+      %h1 打撃結果
       %table
         %thead
           %tr
@@ -92,8 +94,9 @@
             %td.sb {{sb}}
             %td.error {{error}}
             %td.atbat(v-repeat="atbats" v-class="rbi: rbi, begin: inningBeginning" class="{{resultKind}} inning-{{inning}}")>
-              %span.result-body(data-rbi="{{rbi}}" data-begin-inning="{{inningBeginning | formatInning}}") {{result}}
+              %span.result-body(data-rbi="{{rbi}}" data-begin-inning="{{inningBeginning}}") {{result}}
     %template#pitching-results-template
+      %h1 投球結果
       %table
         %thead
           %tr
@@ -101,10 +104,10 @@
             %th.name 名前
             %th.inning 投球回
             %th.run 失点
-            %th.erun 自責点
+            %th.erun 自責
             %th.so 奪三振
-            %th.h 被安打
-            %th.hr 被本塁打
+            %th.h 被安
+            %th.hr 被本
             %th.bb 四死球
             %th.error 被失策
             %th.pitching-result 責任

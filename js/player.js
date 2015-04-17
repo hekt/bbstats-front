@@ -13,8 +13,27 @@
     data: function() {
       return {
         stats: null,
+        results: null,
       };
-    }
+    },
+    created: function() {
+      // Vue.nextTick(this.drawGraph);
+    },
+    methods: {
+      drawGraph: function() {
+        var data = this.$data.player.results;
+        var func = function(x) {
+          return x.rbi;
+        };
+        var history = utils.graph.buildHistory(data, ['rbi'], func);
+        var elem = document.getElementById('avg-graph');
+        var rect = elem.getBoundingClientRect();
+        elem.style.height = (rect.width / 12 * 3) + 'px';
+        elem.style.margin = '2rem 0';
+
+        utils.graph.draw(elem, history);
+      },
+    },
   });
 
   Vue.component('player-pitching-component', {
@@ -43,8 +62,9 @@
       created: function() {
         var playerId = utils.getPlayerIdFromUrl();
         var url = '//' + location.host + '/api/player/stats?' +
-              'playerId=' + playerId;
+              'playerId=' + playerId + '&year=2015';
         utils.getJSON(url).then(function(json) {
+          console.log(json);
           this.$data.hasBattingStats =
             Object.keys(json.batting.results).length > 0;
           this.$data.hasPitchingStats =
