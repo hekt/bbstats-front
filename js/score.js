@@ -40,6 +40,7 @@
             window.scrollTo(rect.left, rect.top);
           });
         }
+        // Vue.nextTick(this.onClickBlockLink); // debug
       });
     },
     methods: {
@@ -116,6 +117,7 @@
           this.$data.scores = json.map(function(score) {
             return {score: score};
           });
+            // .slice(0, 1); // debug
           var match = location.pathname.match(/\/score\/(\d{4}-\d{2}-\d{2})/);
           if (match)
             var time = (new Date(match[1])).getTime();

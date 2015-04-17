@@ -1,0 +1,126 @@
+!!! 5
+
+- vuejsPath = "js/vue.js"
+- baseUrl = "//localhost:50260/"
+-# - baseUrl = "//tsurumaru.hekt.org/"
+- ourTeam = "北海道日本ハムファイターズ"
+
+%html
+  %head
+    %meta(charset="utf-8")
+    %base(href="#{baseUrl}")
+    %meta(name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no")
+    %link(rel="stylesheet" href="css/style.css")
+    %script(src="#{vuejsPath}" defer)
+    %script(src="js/common.js" defer)
+    %script(src="js/score.js" defer)
+    %title 鶴丸ボーイズ
+  %body#game-results
+
+    %div#app
+      %header#main-header
+        %h1 Tsurumaru Boys
+        %nav
+          %ul
+            %li
+              %a(href="./") 試合結果
+            %li
+              %a(href="./stats") 選手成績
+
+      %div#contents
+        %div#scores
+          %article.score(v-repeat="scores" v-component="score-component")
+
+    %template#score-template
+      %a(href="#{baseUrl}score/{{score.date}}" v-on="click: onClickBlockLink" id="score-{{score.date | formatInternalDate}}")
+        %section.result
+          %h1>
+            %span.date {{score.date | formatDate}}
+            @
+            %span.ground {{score.ground}}
+          %dl.short-score(class="{{score.result}}")>
+            %dt.home-team.team-name(v-class="our-team: score.homeTeam.teamName === '#{ourTeam}'")> {{score.homeTeam.teamName}}
+            %dd.home-team.total-runs(v-class="our-team: score.homeTeam.teamName === '#{ourTeam}'")> {{score.homeTeam.totalRuns}}
+            %dt.away-team.team-name(v-class="our-team: score.awayTeam.teamName === '#{ourTeam}'")> {{score.awayTeam.teamName}}
+            %dd.away-team.total-runs(v-class="our-team: score.awayTeam.teamName === '#{ourTeam}'")> {{score.awayTeam.totalRuns}}
+          %p.more-detail {{expandText}}
+      %section.detail(v-show="detailExpanded")
+        %div.loading(v-show="detailLoading")
+          %span.loading-message 読み込み中
+        %section.table-score(v-if="detailLoaded" v-with="score: score" v-component="table-score-component")
+        %section.batting-results(v-if="detailLoaded" v-with="results: battingResults" v-component="batting-results-component")
+        %section.pitching-results(v-if="detailLoaded" v-with="results: pitchingResults" v-component="pitching-results-component")
+
+    %template#table-score-template
+      %table
+        %thead
+          %tr
+            %th.team-name チーム
+            %th.runs(v-repeat="score.awayTeam.runs" class="inning-{{$index + 1}}") {{$index + 1}}
+            %th.total-runs R
+            %th.total-hits H
+            %th.total-errors E
+        %tbody
+          %tr.away-team
+            %th.team-name {{score.awayTeam.teamName}}
+            %td.runs(v-repeat="score.awayTeam.runs" class="inning-{{$index + 1}}") {{$value}}
+            %td.total-runs {{score.awayTeam.totalRuns}}
+            %td.total-hits {{score.awayTeam.totalHits}}
+            %td.total-errors {{score.awayTeam.totalErrors}}
+          %tr.home-team
+            %th.team-name {{score.homeTeam.teamName}}
+            %td.runs(v-repeat="score.homeTeam.runs" class="inning-{{$index + 1}}") {{$value}}
+            %td.total-runs {{score.homeTeam.totalRuns}}
+            %td.total-hits {{score.homeTeam.totalHits}}
+            %td.total-errors {{score.homeTeam.totalErrors}}
+    %template#batting-results-template
+      %table
+        %thead
+          %tr
+            %th.order 打順
+            %th.positions 位置
+            %th.name 名前
+            %th.sb 盗塁
+            %th.error 失策
+            %th.atbat(v-repeat="results.mostAtbats") 第{{$index + 1}}打席
+        %tbody
+          %tr(v-repeat="results.players")
+            %th.order {{order}}
+            %td.positions {{positions}}
+            %td.name
+              %a(href="#{baseUrl}player/{{playerId}}") {{name}}
+            %td.sb {{sb}}
+            %td.error {{error}}
+            %td.atbat(v-repeat="atbats" v-class="rbi: rbi, begin: inningBeginning" class="{{resultKind}} inning-{{inning}}")>
+              %span.result-body(data-rbi="{{rbi}}" data-begin-inning="{{inningBeginning | formatInning}}") {{result}}
+    %template#pitching-results-template
+      %table
+        %thead
+          %tr
+            %th.order 投順
+            %th.name 名前
+            %th.inning 投球回
+            %th.run 失点
+            %th.erun 自責点
+            %th.so 奪三振
+            %th.h 被安打
+            %th.hr 被本塁打
+            %th.bb 四死球
+            %th.error 被失策
+            %th.pitching-result 責任
+        %tbody
+          %tr
+          %tr(v-repeat="results.players")
+            %th.order {{$index + 1}}
+            %td.name
+              %a(href="#{baseUrl}player/{{playerId}}") {{name}}
+            %td.inning {{out | outToInning}}
+            %td.run {{run}}
+            %td.erun {{erun}}
+            %td.so {{so}}
+            %td.h {{h}}
+            %td.hr {{hr}}
+            %td.bb {{bb}}
+            %td.error {{error}}
+            %td.pitching-result {{result | formatResult}}
+

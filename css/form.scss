@@ -1,0 +1,163 @@
+/*! import reset.css (http://meyerweb.com/eric/tools/css/reset/) as scss */
+
+@import 'reset';
+
+/*! style.css */
+
+/* ------------------------------------------------------------ *
+ * Form
+ * ------------------------------------------------------------ */
+
+#score-form-page {
+  background-color: #eee ;
+}
+
+#score-form {
+  margin: 0 1em ;
+  
+  table {
+    border: 1px solid #ddd ;
+    border-collapse: collapse ;
+    width: 100% ;
+    background-color: #e8e8e8 ;
+
+    th, td {
+      box-sizing: border-box ;
+    }
+    
+    thead {
+      th {
+        background-color: #ddd ;
+        padding: .5em ;
+        font-size: .8rem ;
+      }
+    }
+
+    input {
+      box-sizing: border-box ;
+      margin: 0 ;
+      padding: .5em ;
+    }
+
+    input[type="text"] {
+      width: 100% ;
+    }
+  }
+
+  #game-score-form {
+    margin: 2rem 0 ;
+
+    .control-innings {
+      font-size: .8em ;
+      text-align: right ;
+      
+      li {
+        display: inline ;
+        cursor: pointer ;
+      }
+    }
+    
+    td input {
+      text-align: center ;
+    }
+    
+    .team-name {
+      width: 16em ;
+
+      input {
+        text-align: left ;
+      }
+    }
+  }
+
+  #batting-stats-form, #pitching-stats-form {
+    margin: 2rem 0 ;
+    
+    .control-atbats {
+      font-size: .8em ;
+      text-align: right ;
+
+      li {
+        display: inline ;
+        cursor: pointer ;
+      }
+    }
+
+    .order {
+      width: 3em ;
+      input {
+        text-align: center ;
+      }
+    }
+    
+    .control-row {
+      width: 5em ;
+      text-align: center ;
+      font-size: .8em ;
+      line-height: 2 ;
+      
+      span {
+        display: block ;
+        cursor: pointer ;
+      }
+    }
+  }
+
+  #batting-stats-form {
+    .player {
+      width: 9em ;
+
+      .positions {
+        width: 100% ;
+      }
+      .name {
+        width: 70% ;
+      }
+      .player-id {
+        width: 30% ;
+      }
+    }
+
+    .stats {
+      width: 6em ;
+
+      input {
+        width: 50% ;
+        text-align: center ;
+      }
+    }
+
+    .atbat {
+      .inning, .out-count {
+        width: 30% ;
+      }
+      .first-runner, .second-runner, .third-runner {
+        width: 10% ;
+      }
+      .kind, .rbi {
+        width: 30% ;
+      }
+      .result {
+        width: 40% ;
+      }
+    }
+  }
+
+  #pitching-stats-form {
+    input[type="text"] {
+      text-align: center ;
+    }
+    
+    .player {
+      width: 9em ;
+
+      .name {
+        width: 70% ;
+        text-align: left ;
+      }
+      .player-id {
+        width: 30% ;
+      }
+    }
+  }
+}
