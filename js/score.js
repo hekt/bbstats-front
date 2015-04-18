@@ -40,7 +40,7 @@
             window.scrollTo(rect.left, rect.top);
           });
         }
-        Vue.nextTick(this.onClickBlockLink); // debug
+        // Vue.nextTick(this.onClickBlockLink); // debug
       });
     },
     methods: {
@@ -54,13 +54,13 @@
         var url = '//' + location.host + '/api/stats?date=' + date;
         this.$data.detailLoading = true;
         return utils.getJSON(url).then(function(json) {
-          var mostAtbats = utils.calcMostAtbats(json.batting);
+          var mostAtbats = utils.calcMostAtbats(json.batting.results);
           this.$data.battingResults = {
-            players: utils.formatBattingStats(json.batting),
+            players: utils.formatBattingStats(json.batting.results),
             mostAtbats: new Array(mostAtbats),
           };
           this.$data.pitchingResults = {
-            players: json.pitching,
+            players: json.pitching.results,
           };
           
           this.$data.detailLoaded = true;
@@ -116,8 +116,8 @@
         utils.getJSON(url).then(function(json) {
           this.$data.scores = json.map(function(score) {
             return {score: score};
-          })
-            .slice(0, 1); // debug
+          });
+            // .slice(0, 1); // debug
           var match = location.pathname.match(/\/score\/(\d{4}-\d{2}-\d{2})/);
           if (match)
             var time = (new Date(match[1])).getTime();
