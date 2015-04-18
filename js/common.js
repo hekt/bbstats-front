@@ -40,6 +40,42 @@ a.Promise&&"reject"in a.Promise&&"all"in a.Promise&&"race"in a.Promise&&function
 
   var utils = global.utils = {};
 
+  utils.touchEvent = (function() {
+    var target;
+    var callback = {};
+
+    function initialize() {
+      target = null;
+      callback = {};
+    }
+
+    function start(e, func, thisObj) {
+      target = e.target;
+      callback = {
+        func: func,
+        this: thisObj,
+        args: Array.prototype.slice.call(arguments, 3)
+      };
+    }
+
+    function end(e) {
+      if (e.target === target && callback.func) {
+        e.preventDefault();
+        e.stopPropagation();
+        callback.func.apply(callback.this, callback.args);
+      }
+      initialize();
+    }
+
+    return {
+      start: start,
+      end: end,
+      cancel: initialize,
+      move: initialize
+    };
+  })();
+
+
   utils.getPlayerIdFromUrl = function() {
     return Number(location.pathname.replace(/\/player\/(\d+)/, '$1'));
   };

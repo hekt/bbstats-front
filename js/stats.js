@@ -33,9 +33,8 @@
     methods: {
       sortRows: function(e) {
         sortRows.call(this, e);
-      }
+      },
     }
-
   });
 
 

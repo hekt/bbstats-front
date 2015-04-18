@@ -316,3 +316,63 @@ a {
 .pitching-results,
 .pitching-stats {
 }
+
+
+/*
+ * for large screen
+ */
+
+$maxWidth: 900px ;
+
+@media (min-width: 640px) {
+
+  #main-header {
+    h1 {
+      font-size: 4rem ;
+    }
+    
+    nav {
+      max-width: $maxWidth ;
+      left: 50% ;
+      transform: translateX(-50%) ;
+    }
+  }
+
+  #contents {
+    max-width: $maxWidth ;
+    margin: 0 auto ;
+  }
+
+  .score,
+  .player-stats {
+    .short-score {
+      height: 4.5rem ;
+
+      dt {
+        position: absolute ;
+        left: 50% ;
+        top: 1rem ;
+        line-height: 4rem ;
+        transform: translateX(-100%) ;
+        text-align: right ;
+        width: 50% ;
+        padding: 0 5.5rem 0 0 ;
+
+        &.away-team {
+          text-align: left ;
+          margin-top: 0 ;
+          transform: translateX(0) ;
+          padding: 0 0 0 5.5rem ;
+        }
+      }
+ 
+      dd {
+        top: 1rem ;
+        line-height: 3.5rem ;
+        font-size: 2.5rem ;
+        width: 3.5rem ;
+        transform: translateX(-4rem) ;
+      }
+    }
+  }
+}
