@@ -59,7 +59,7 @@
           %tr(v-repeat="stats")
             %th.ranking {{$index+1}}
             %td.player-name
-              %a(href="#{baseUrl}player/{{playerId}}") {{name}}
+              %a(href="#{baseUrl}player/{{playerId}}") {{playerName}}
             %td.g {{g}}
             %td.ab {{ab}}
             %td.h {{h}}
@@ -99,7 +99,7 @@
           %tr(v-repeat="stats")
             %th.ranking {{$index+1}}
             %td.player-name
-              %a(href="#{baseUrl}player/{{playerId}}") {{name}}
+              %a(href="#{baseUrl}player/{{playerId}}") {{playerName}}
             %td.g {{g}}
             %td.inning {{out | outToInning}}
             %td.win {{win}}

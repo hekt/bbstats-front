@@ -70,7 +70,7 @@
           this.$data.hasPitchingStats =
             Object.keys(json.pitching.results).length > 0;
           this.$data.player = {
-            name: json.name,
+            playerName: json.playerName,
             playerId: json.playerId,
             batting: {
               mostAtbats: utils.calcMostAtbatsOnPlayer(json.batting.results),

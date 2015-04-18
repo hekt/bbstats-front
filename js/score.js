@@ -54,13 +54,13 @@
         var url = '//' + location.host + '/api/stats?date=' + date;
         this.$data.detailLoading = true;
         return utils.getJSON(url).then(function(json) {
-          var mostAtbats = utils.calcMostAtbats(json.batting.results);
+          var mostAtbats = utils.calcMostAtbats(json.batting);
           this.$data.battingResults = {
-            players: utils.formatBattingStats(json.batting.results),
+            players: utils.formatBattingStats(json.batting),
             mostAtbats: new Array(mostAtbats),
           };
           this.$data.pitchingResults = {
-            players: json.pitching.results,
+            players: json.pitching,
           };
           
           this.$data.detailLoaded = true;

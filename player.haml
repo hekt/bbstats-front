@@ -31,7 +31,7 @@
         %article.player-stats(v-if="loaded")
           %h1
             %span.number \#{{player.playerId}}
-            %span.name {{player.name}}
+            %span.name {{player.playerName}}
           %section.batting(v-if="hasBattingStats" v-component="player-batting-component" v-with="player: player.batting")
           %section.pitching(v-if="hasPitchingStats" v-component="player-pitching-component" v-with="player: player.pitching")
 

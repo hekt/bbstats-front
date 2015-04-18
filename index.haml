@@ -90,7 +90,7 @@
             %th.order {{order}}
             %td.positions {{positions}}
             %td.name
-              %a(href="#{baseUrl}player/{{playerId}}") {{name}}
+              %a(href="#{baseUrl}player/{{playerId}}") {{playerName}}
             %td.sb {{sb}}
             %td.error {{error}}
             %td.atbat(v-repeat="atbats" v-class="rbi: rbi, begin: inningBeginning" class="{{resultKind}} inning-{{inning}}")>
@@ -116,7 +116,7 @@
           %tr(v-repeat="results.players")
             %th.order {{$index + 1}}
             %td.name
-              %a(href="#{baseUrl}player/{{playerId}}") {{name}}
+              %a(href="#{baseUrl}player/{{playerId}}") {{playerName}}
             %td.inning {{out | outToInning}}
             %td.run {{run}}
             %td.erun {{erun}}
