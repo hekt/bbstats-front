@@ -1,19 +1,16 @@
 !!! 5
 
 - vuejsPath = "js/vue.js"
-- baseUrl = "//localhost:50260/"
--# - baseUrl = "//tsurumaru.hekt.org/"
 - ourTeam = "北海道日本ハムファイターズ"
 
 %html
   %head
     %meta(charset="utf-8")
-    %base(href="#{baseUrl}")
     %meta(name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no")
-    %link(rel="stylesheet" href="css/style.css")
-    %script(src="#{vuejsPath}" defer)
-    %script(src="js/common.js" defer)
-    %script(src="js/stats.js" defer)
+    %link(rel="stylesheet" href="/css/style.css")
+    %script(src="/#{vuejsPath}" defer)
+    %script(src="/js/common.js" defer)
+    %script(src="/js/stats.js" defer)
     %title 鶴丸ボーイズ
   %body#team-stats
 
@@ -23,9 +20,9 @@
         %nav
           %ul>
             %li>
-              %a(href="./")> 試合結果
+              %a(href="/")> 試合結果
             %li.active>
-              %a(href="./stats")> 選手成績
+              %a(href="/stats")> 選手成績
               
       %div#contents
         %article.player-stats(v-if="loaded")
@@ -57,7 +54,7 @@
           %tr(v-repeat="stats")
             %th.ranking {{$index+1}}
             %td.player-name
-              %a(href="#{baseUrl}player/{{playerId}}") {{playerName}}
+              %a(href="/player/{{playerId}}") {{playerName}}
             %td.g {{g}}
             %td.ab {{ab}}
             %td.h {{h}}
@@ -97,7 +94,7 @@
           %tr(v-repeat="stats")
             %th.ranking {{$index+1}}
             %td.player-name
-              %a(href="#{baseUrl}player/{{playerId}}") {{playerName}}
+              %a(href="/player/{{playerId}}") {{playerName}}
             %td.g {{g}}
             %td.inning {{out | outToInning}}
             %td.win {{win}}
