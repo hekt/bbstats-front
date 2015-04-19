@@ -183,7 +183,7 @@ a.Promise&&"reject"in a.Promise&&"all"in a.Promise&&"race"in a.Promise&&function
   utils.sortObjsByKey = function(key, objs, desc) {
     objs.sort(function(a, b) {
       var av = a[key];
-      var bv = a[key];
+      var bv = b[key];
       if (av === null) return 1;
       if (bv === null) return -1;
       if (av === bv) return 0;
