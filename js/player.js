@@ -8,39 +8,38 @@
   // Vue
   // ------------------------------------------------------------
 
-  Vue.component('player-batting-component', {
-    template: '#player-batting-template',
+  Vue.component('batting-stats-component', {
+    template: '#batting-stats-template',
     data: function() {
       return {
-        stats: null,
-        results: null,
+        player: null,
       };
-    },
-    created: function() {
-      // Vue.nextTick(this.drawGraph);
-    },
-    methods: {
-      drawGraph: function() {
-        var data = this.$data.player.results;
-        var func = function(x) {
-          return x.rbi;
-        };
-        var history = utils.graph.buildHistory(data, ['rbi'], func);
-        var elem = document.getElementById('avg-graph');
-        var rect = elem.getBoundingClientRect();
-        elem.style.height = (rect.width / 12 * 3) + 'px';
-        elem.style.margin = '2rem 0';
-
-        utils.graph.draw(elem, history);
-      },
     },
   });
 
-  Vue.component('player-pitching-component', {
-    template: '#player-pitching-template',
+  Vue.component('batting-results-component', {
+    template: '#batting-results-template',
     data: function() {
       return {
-        stats: null,
+        player: null,
+      };
+    },
+  });
+
+  Vue.component('pitching-stats-component', {
+    template: '#pitching-stats-template',
+    data: function() {
+      return {
+        player: null,
+      };
+    },
+  });
+
+  Vue.component('pitching-results-component', {
+    template: '#pitching-results-template',
+    data: function() {
+      return {
+        player: null,
       };
     },
   });
@@ -64,7 +63,6 @@
         var url = '//' + location.host + '/api/player/stats?' +
               'playerId=' + playerId + '&year=2015';
         utils.getJSON(url).then(function(json) {
-          console.log(json);
           this.$data.hasBattingStats =
             Object.keys(json.batting.results).length > 0;
           this.$data.hasPitchingStats =

@@ -32,143 +32,144 @@
           %h1
             %span.number \#{{player.playerId}}
             %span.name {{player.playerName}}
-          %section.batting(v-if="hasBattingStats" v-component="player-batting-component" v-with="player: player.batting")
-          %section.pitching(v-if="hasPitchingStats" v-component="player-pitching-component" v-with="player: player.pitching")
+          %section.batting-stats(v-if="hasBattingStats" v-component="batting-stats-component" v-with="player: player.batting")
+          %section.batting-results(v-if="hasBattingStats" v-component="batting-results-component" v-with="player: player.batting")
+          %section.pitching-stats(v-if="hasPitchingStats" v-component="pitching-stats-component" v-with="player: player.pitching")
+          %section.pitching-results(v-if="hasPitchingStats" v-component="pitching-results-component" v-with="player: player.pitching")
 
-    %template#player-batting-template
-      %section.batting-stats
-        %h1 野手成績
-        %div#avg-graph
-        %table
-          %thead
-            %tr
-              %th.situation 状況
-              %th.g 試合
-              %th.ab 打数
-              %th.h 安打
-              %th.hr 本塁打
-              %th.bb 四球
-              %th.rbi 打点
-              %th.so 三振
-              %th.sb 盗塁
-              %th.error 失策
-              %th.avg 打率
-              %th.obp 出塁率
-              %th.slg 長打率
-              %th.ops OPS
-          %tbody
-            %tr
-              %th.situation 通算
-              %td.g {{player.stats.total.g}}
-              %td.ab {{player.stats.total.ab}}
-              %td.h {{player.stats.total.h}}
-              %td.hr {{player.stats.total.hr}}
-              %td.bb {{player.stats.total.bb}}
-              %td.rbi {{player.stats.total.rbi}}
-              %td.so {{player.stats.total.so}}
-              %td.sb {{player.stats.total.sb}}
-              %td.error {{player.stats.total.error}}
-              %td.avg {{player.stats.total.avg | formatRatio}}
-              %td.obp {{player.stats.total.obp | formatRatio}}
-              %td.slg {{player.stats.total.slg | formatRatio}}
-              %td.ops {{player.stats.total.ops | formatRatio}}
-            %tr
-              %th.situation 得点圏
-              %td.g -
-              %td.ab {{player.stats.risp.ab}}
-              %td.h {{player.stats.risp.h}}
-              %td.hr {{player.stats.risp.hr}}
-              %td.bb {{player.stats.risp.bb}}
-              %td.rbi {{player.stats.risp.rbi}}
-              %td.so {{player.stats.risp.so}}
-              %td.sb -
-              %td.error -
-              %td.avg {{player.stats.risp.avg | formatRatio}}
-              %td.obp {{player.stats.risp.obp | formatRatio}}
-              %td.slg {{player.stats.risp.slg | formatRatio}}
-              %td.ops {{player.stats.risp.ops | formatRatio}}
+    %template#batting-stats-template
+      %h1 野手成績
+      %div#avg-graph
+      %table
+        %thead
+          %tr
+            %th.situation 状況
+            %th.g 試合
+            %th.ab 打数
+            %th.h 安打
+            %th.hr 本塁打
+            %th.bb 四球
+            %th.rbi 打点
+            %th.so 三振
+            %th.sb 盗塁
+            %th.error 失策
+            %th.avg 打率
+            %th.obp 出塁率
+            %th.slg 長打率
+            %th.ops OPS
+        %tbody
+          %tr
+            %th.situation 通算
+            %td.g {{player.stats.total.g}}
+            %td.ab {{player.stats.total.ab}}
+            %td.h {{player.stats.total.h}}
+            %td.hr {{player.stats.total.hr}}
+            %td.bb {{player.stats.total.bb}}
+            %td.rbi {{player.stats.total.rbi}}
+            %td.so {{player.stats.total.so}}
+            %td.sb {{player.stats.total.sb}}
+            %td.error {{player.stats.total.error}}
+            %td.avg {{player.stats.total.avg | formatRatio}}
+            %td.obp {{player.stats.total.obp | formatRatio}}
+            %td.slg {{player.stats.total.slg | formatRatio}}
+            %td.ops {{player.stats.total.ops | formatRatio}}
+          %tr
+            %th.situation 得点圏
+            %td.g -
+            %td.ab {{player.stats.risp.ab}}
+            %td.h {{player.stats.risp.h}}
+            %td.hr {{player.stats.risp.hr}}
+            %td.bb {{player.stats.risp.bb}}
+            %td.rbi {{player.stats.risp.rbi}}
+            %td.so {{player.stats.risp.so}}
+            %td.sb -
+            %td.error -
+            %td.avg {{player.stats.risp.avg | formatRatio}}
+            %td.obp {{player.stats.risp.obp | formatRatio}}
+            %td.slg {{player.stats.risp.slg | formatRatio}}
+            %td.ops {{player.stats.risp.ops | formatRatio}}
               
-      
-      %section.batting-results
-        %h1 打撃結果
-        %table
-          %thead
-            %tr
-              %th.date 日付
-              %th.ground 球場
-              %th.sb 盗塁
-              %th.error 失策
-              %th.atbat(v-repeat="player.mostAtbats") 第{{$index + 1}}打席
-          %tbody
-            %tr(v-repeat="player.results")
-              %th.date
-                %a(href="#{baseUrl}score/{{date | formatInternalDate}}") {{date | formatDate}}
-              %td.ground {{ground}}
-              %td.sb {{sb}}
-              %td.error {{error}}
-              %td.atbat(v-repeat="atbats" v-class="rbi: rbi" class="{{resultKind}}")>
-                %span.result-body(data-rbi="{{rbi}}") {{result}}
-    %template#player-pitching-template
-      %section.pitching-stats
-        %h1 投手成績
-        %table
-          %thead
-            %tr
-              %th.g 登板
-              %th.inning 投球回
-              %th.win 勝利
-              %th.lose 敗戦
-              %th.hold H
-              %th.save S
-              %th.wpct 勝率
-              %th.so 奪三振
-              %th.bb 与四死
-              %th.h 被安
-              %th.hr 被本
-              %th.era 防御率
-              %th.whip WHIP
-              %th.k9 奪三振率
-          %tbody
-            %tr
-              %td.g {{player.stats.total.g}}
-              %td.inning {{player.stats.total.out | outToInning}}
-              %td.win {{player.stats.total.win}}
-              %td.lose {{player.stats.total.lose}}
-              %td.hold {{player.stats.total.hold}}
-              %td.save {{player.stats.total.save}}
-              %td.wpct {{player.stats.total.wpct | formatRatio}}
-              %td.so {{player.stats.total.so}}
-              %td.bb {{player.stats.total.bb}}
-              %td.h {{player.stats.total.h}}
-              %td.hr {{player.stats.total.hr}}
-              %td.era {{player.stats.total.era | formatRatio2}}
-              %td.whip {{player.stats.total.whip | formatRatio2}}
-              %td.k9 {{player.stats.total.k9 | formatRatio2}}
-      %section.pitching-results
-        %h1 投球結果
-        %table
-          %thead
-            %tr
-              %th.date 日付
-              %th.ground 球場
-              %th.inning 投球回
-              %th.run 失点
-              %th.erun 自責点
-              %th.so 奪三振
-              %th.h 被安打
-              %th.bb 四死球
-              %th.error 被失策
-              %th.pitching-result 勝敗
-          %tbody
-            %tr(v-repeat="player.results")
-              %th.date
-                %a(href="#{baseUrl}score/{{date | formatInternalDate}}") {{date | formatDate}}
-              %td.ground {{ground}}
-              %td.inning {{out | outToInning }}
-              %td.run {{run}}
-              %td.erun {{erun}}
-              %td.so {{so}}
-              %td.h {{h}}
-              %td.bb {{bb}}
-              %td.error {{error}}
-              %td.pitching-result {{result | formatResult}}
+    %template#batting-results-template
+      %h1 打撃結果
+      %table
+        %thead
+          %tr
+            %th.date 日付
+            %th.ground 球場
+            %th.sb 盗塁
+            %th.error 失策
+            %th.atbat(v-repeat="player.mostAtbats") 第{{$index + 1}}打席
+        %tbody
+          %tr(v-repeat="player.results")
+            %th.date
+              %a(href="#{baseUrl}score/{{date | formatInternalDate}}") {{date | formatDate}}
+            %td.ground {{ground}}
+            %td.sb {{sb}}
+            %td.error {{error}}
+            %td.atbat(v-repeat="atbats" v-class="rbi: rbi" class="{{resultKind}}")>
+              %span.result-body(data-rbi="{{rbi}}") {{result}}
+              
+    %template#pitching-stats-template
+      %h1 投手成績
+      %table
+        %thead
+          %tr
+            %th.g 登板
+            %th.inning 投球回
+            %th.win 勝利
+            %th.lose 敗戦
+            %th.hold H
+            %th.save S
+            %th.wpct 勝率
+            %th.so 奪三振
+            %th.bb 与四死
+            %th.h 被安
+            %th.hr 被本
+            %th.era 防御率
+            %th.whip WHIP
+            %th.k9 奪三振率
+        %tbody
+          %tr
+            %td.g {{player.stats.total.g}}
+            %td.inning {{player.stats.total.out | outToInning}}
+            %td.win {{player.stats.total.win}}
+            %td.lose {{player.stats.total.lose}}
+            %td.hold {{player.stats.total.hold}}
+            %td.save {{player.stats.total.save}}
+            %td.wpct {{player.stats.total.wpct | formatRatio}}
+            %td.so {{player.stats.total.so}}
+            %td.bb {{player.stats.total.bb}}
+            %td.h {{player.stats.total.h}}
+            %td.hr {{player.stats.total.hr}}
+            %td.era {{player.stats.total.era | formatRatio2}}
+            %td.whip {{player.stats.total.whip | formatRatio2}}
+            %td.k9 {{player.stats.total.k9 | formatRatio2}}
+
+    %template#pitching-results-template
+      %h1 投球結果
+      %table
+        %thead
+          %tr
+            %th.date 日付
+            %th.ground 球場
+            %th.inning 投球回
+            %th.run 失点
+            %th.erun 自責点
+            %th.so 奪三振
+            %th.h 被安打
+            %th.bb 四死球
+            %th.error 被失策
+            %th.pitching-result 勝敗
+        %tbody
+          %tr(v-repeat="player.results")
+            %th.date
+              %a(href="#{baseUrl}score/{{date | formatInternalDate}}") {{date | formatDate}}
+            %td.ground {{ground}}
+            %td.inning {{out | outToInning }}
+            %td.run {{run}}
+            %td.erun {{erun}}
+            %td.so {{so}}
+            %td.h {{h}}
+            %td.bb {{bb}}
+            %td.error {{error}}
+            %td.pitching-result {{result | formatResult}}

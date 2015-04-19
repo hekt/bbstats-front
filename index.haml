@@ -28,28 +28,25 @@
               %a(href="./stats")> 選手成績
 
       %div#contents
-        %div#scores
-          %article.score(v-repeat="scores" v-component="score-component")
+        %article.score(v-repeat="scores" v-component="score-component")
 
     %template#score-template
-      %a(href="#{baseUrl}score/{{score.date}}" v-on="click: onClickBlockLink" id="score-{{score.date | formatInternalDate}}")
-        %section.result
-          %h1>
-            %span.date {{score.date | formatDate}}
-            @
-            %span.ground {{score.ground}}
-          %dl.short-score(class="{{score.result}}")>
-            %dt.home-team.team-name(v-class="our-team: score.homeTeam.teamName === '#{ourTeam}'")> {{score.homeTeam.teamName}}
-            %dd.home-team.total-runs(v-class="our-team: score.homeTeam.teamName === '#{ourTeam}'")> {{score.homeTeam.totalRuns}}
-            %dt.away-team.team-name(v-class="our-team: score.awayTeam.teamName === '#{ourTeam}'")> {{score.awayTeam.teamName}}
-            %dd.away-team.total-runs(v-class="our-team: score.awayTeam.teamName === '#{ourTeam}'")> {{score.awayTeam.totalRuns}}
-          %p.more-detail {{expandText}}
-      %section.detail(v-show="detailExpanded")
-        %div.loading(v-show="detailLoading")
-          %span.loading-message 読み込み中
-        %section.table-score(v-if="detailLoaded" v-with="score: score" v-component="table-score-component")
-        %section.batting-results(v-if="detailLoaded" v-with="results: battingResults" v-component="batting-results-component")
-        %section.pitching-results(v-if="detailLoaded" v-with="results: pitchingResults" v-component="pitching-results-component")
+      %h1(id="score-{{score.date | formatInternalDate}}")>
+        %span.date {{score.date | formatDate}}
+        @
+        %span.ground {{score.ground}}
+      %dl.short-score>
+        %dt.home-team.team-name(v-class="our-team: score.homeTeam.teamName === '#{ourTeam}'")> {{score.homeTeam.teamName}}
+        %dd.home-team.total-runs(v-class="our-team: score.homeTeam.teamName === '#{ourTeam}'")> {{score.homeTeam.totalRuns}}
+        %dt.away-team.team-name(v-class="our-team: score.awayTeam.teamName === '#{ourTeam}'")> {{score.awayTeam.teamName}}
+        %dd.away-team.total-runs(v-class="our-team: score.awayTeam.teamName === '#{ourTeam}'")> {{score.awayTeam.totalRuns}}
+      %p.more-detail
+        %a(href="#{baseUrl}score/{{score.date}}" v-on="click: onClickBlockLink") {{expandText}}
+      %div.loading(v-show="detailLoading")
+        %span.loading-message 読み込み中
+      %section.table-score(v-show="detailExpanded" v-if="detailLoaded" v-with="score: score" v-component="table-score-component")
+      %section.batting-results(v-show="detailExpanded" v-if="detailLoaded" v-with="results: battingResults" v-component="batting-results-component")
+      %section.pitching-results(v-show="detailExpanded" v-if="detailLoaded" v-with="results: pitchingResults" v-component="pitching-results-component")
 
     %template#table-score-template
       %h1 スコアボード

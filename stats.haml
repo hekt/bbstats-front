@@ -30,10 +30,8 @@
       %div#contents
         %article.player-stats(v-if="loaded")
           %h1 選手成績
-          %section.batting
-            %section.batting-stats(v-component="batting-stats-component" v-with="stats: batting")
-          %section.pitching
-            %section.pitching-stats(v-component="pitching-stats-component" v-with="stats: pitching")
+          %section.batting-stats(v-component="batting-stats-component" v-with="stats: batting")
+          %section.pitching-stats(v-component="pitching-stats-component" v-with="stats: pitching")
           
     %template#batting-stats-template
       %h1 野手成績
